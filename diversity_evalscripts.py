@@ -63,7 +63,8 @@ num = 5
 # resultFile = resultFile.split('.')[0]+str(num) + '.json'
 
 # calculate metric scores
-scorer = COCOEval(pathToData, candName, num=num, dfMode=dfMode)
+scorer = COCOEval(pathToData, candName, num=num)
+# scorer = COCOEval(pathToData, candName, num=num, dfMode=dfMode)
 # scores: dict of list with key = metric and value = score given to each
 # candidate
 scorer.evaluate()
