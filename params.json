@@ -1,8 +1,8 @@
 {
 	"pathToData" : "./results",
 	"refName" : "annotations/captions_val2014.json",
-	"candName" : "merge_results.json",
-	"resultFile" : "accuracy.json",
+	"candName" : "cache__val_multi.json",
+	"resultFile" : "LSA",
 	"idf" : "coco-train2014-df",
-	"num": 10
+	"num": 5
 }
