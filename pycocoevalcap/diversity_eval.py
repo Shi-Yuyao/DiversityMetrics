@@ -111,7 +111,7 @@ class SelfCider:
             u, s, v = np.linalg.svd(cov)
             s_sqrt = np.sqrt(s)
             r = max(s_sqrt) / s_sqrt.sum()
-            print('ratio=%.5f\n') % (-np.log10(r) / np.log10(self._num))
+            print('ratio=%.5f\n' % (-np.log10(r) / np.log10(self._num)))
             ratio[im_id] = -np.log10(r) / np.log10(self._num)
             avg_diversity += -np.log10(r) / np.log10(self._num)
             if len(ratio) == 5000:
