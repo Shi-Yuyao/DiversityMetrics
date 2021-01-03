@@ -6,17 +6,17 @@ import pickle
 import numpy as np
 
 from collections import defaultdict
-from tokenizer.ptbtokenizer import PTBTokenizer
-from bleu.bleu import Bleu
-from meteor.meteor import Meteor
-from rouge.rouge import Rouge
-from cider.cider import Cider
-from spice.spice import Spice
+from .tokenizer.ptbtokenizer import PTBTokenizer
+from .bleu.bleu import Bleu
+from .meteor.meteor import Meteor
+from .rouge.rouge import Rouge
+from .cider.cider import Cider
+from .spice.spice import Spice
 import nltk
 
 
 class SelfCider:
-    def __init__(self, pathToData, candName, num=10, dfMode = "coco-val-df"):
+    def __init__(self, pathToData, candName, num=10, dfMode="coco-val-df"):
         """
         Reference file: list of dict('image_id': image_id, 'caption': caption).
         Candidate file: list of dict('image_id': image_id, 'caption': caption).
@@ -37,6 +37,7 @@ class SelfCider:
         """
         Load the sentences from json files
         """
+
         def readJson():
             path_to_cand_file = os.path.join(self._pathToData, self._candName)
             cand_list = json.loads(open(path_to_cand_file, 'r').read())
@@ -48,7 +49,7 @@ class SelfCider:
 
             return res
 
-        print 'Loading Data...'
+        print('Loading Data...')
         res = readJson()
         # res = {
         #     '0': [
@@ -63,7 +64,7 @@ class SelfCider:
         ratio = {}
         avg_diversity = 0
         for im_id in res.keys():
-            print ('number of images: %d\n')%(len(ratio))
+            print('number of images: %d\n') % (len(ratio))
             cov = np.zeros([self._num, self._num])
             for i in range(self._num):
                 for j in range(i, self._num):
@@ -88,7 +89,7 @@ class SelfCider:
                     # =================================================
                     # Set up scorers
                     # =================================================
-                    print 'setting up scorers...'
+                    print('setting up scorers...')
                     scorers = [
                         # (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
                         # (Meteor(), "METEOR"),
@@ -101,7 +102,7 @@ class SelfCider:
                     # Compute scores
                     # =================================================
                     for scorer, method in scorers:
-                        print 'computing %s score...'%(scorer.method())
+                        print('computing %s score...') % (scorer.method())
                         score, scores = scorer.compute_score(new_gts, new_res)
 
                     cov[i, j] = score
@@ -110,12 +111,12 @@ class SelfCider:
             u, s, v = np.linalg.svd(cov)
             s_sqrt = np.sqrt(s)
             r = max(s_sqrt) / s_sqrt.sum()
-            print('ratio=%.5f\n')%(-np.log10(r) / np.log10(self._num))
+            print('ratio=%.5f\n') % (-np.log10(r) / np.log10(self._num))
             ratio[im_id] = -np.log10(r) / np.log10(self._num)
             avg_diversity += -np.log10(r) / np.log10(self._num)
             if len(ratio) == 5000:
                 break
-        print('Average diversity: %.5f')%(avg_diversity / len(ratio))
+        print('Average diversity: %.5f') % (avg_diversity / len(ratio))
         self.eval = ratio
 
     def setEval(self, score, method):
@@ -134,6 +135,7 @@ class LSA:
         """
         Load the sentences from json files
         """
+
         def readJson():
             path_to_cand_file = os.path.join(self._pathToData, self._candName)
             cand_list = json.loads(open(path_to_cand_file, 'r').read())
@@ -165,12 +167,12 @@ class LSA:
                     term_doc[token_id, doc_id] += 1
             return term_doc
 
-        print 'Loading Data...'
+        print('Loading Data...')
         res = readJson()
         ratio = {}
         avg_diversity = 0
         for im_id in res.keys():
-            print ('number of images: %d\n')%(len(ratio))
+            print('number of images: %d\n') % (len(ratio))
             captions = res[im_id][:self._num]
             term_doc = term_document(captions)
             u, s, v = np.linalg.svd(term_doc)
@@ -180,12 +182,12 @@ class LSA:
             avg_diversity += -np.log10(r) / np.log10(self._num)
             if len(ratio) == 5000:
                 break
-        print ('Average diversity: %.5f')%(avg_diversity / len(ratio))
+        print('Average diversity: %.5f') % (avg_diversity / len(ratio))
         self.eval = ratio
 
 
 class mBLEU:
-    def __init__(self, pathToData, candName, num=10, dfMode = "coco-val-df"):
+    def __init__(self, pathToData, candName, num=10, dfMode="coco-val-df"):
         """
         Reference file: list of dict('image_id': image_id, 'caption': caption).
         Candidate file: list of dict('image_id': image_id, 'caption': caption).
@@ -206,6 +208,7 @@ class mBLEU:
         """
         Load the sentences from json files
         """
+
         def readJson():
             path_to_cand_file = os.path.join(self._pathToData, self._candName)
             cand_list = json.loads(open(path_to_cand_file, 'r').read())
@@ -217,12 +220,12 @@ class mBLEU:
 
             return res
 
-        print 'Loading Data...'
+        print('Loading Data...')
         res = readJson()
         ratio = {}
         avg_diversity = 0
         for im_id in res.keys():
-            print ('number of images: %d\n')%(len(ratio))
+            print('number of images: %d\n') % (len(ratio))
             final_score = []
             for i in range(self._num):
                 new_gts = {}
@@ -232,7 +235,7 @@ class mBLEU:
                 # =================================================
                 # Set up scorers
                 # =================================================
-                print 'setting up scorers...'
+                print('setting up scorers...')
                 scorers = [
                     (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
                     # (Meteor(), "METEOR"),
@@ -245,7 +248,7 @@ class mBLEU:
                 # Compute scores
                 # =================================================
                 for scorer, method in scorers:
-                    print 'computing %s score...'%(scorer.method())
+                    print('computing %s score...') % (scorer.method())
                     score, scores = scorer.compute_score(gts=new_gts, res=new_res)
                 final_score.append(score)
             mbleus = np.array(final_score).sum(0) / self._num
@@ -253,7 +256,7 @@ class mBLEU:
             avg_diversity += sum(mbleus) / 4
             if len(ratio) == 5000:
                 break
-        print('Average diversity: %.5f')%(avg_diversity / len(ratio))
+        print('Average diversity: %.5f') % (avg_diversity / len(ratio))
         self.eval = ratio
 
     def setEval(self, score, method):
@@ -261,7 +264,7 @@ class mBLEU:
 
 
 class Accurate:
-    def __init__(self, pathToData, refName, candName, model=None, num=10, dfMode = "corpus"):
+    def __init__(self, pathToData, refName, candName, model=None, num=10, dfMode="corpus"):
         """
         Reference file: list of dict('image_id': image_id, 'caption': caption).
         Candidate file: list of dict('image_id': image_id, 'caption': caption).
@@ -282,6 +285,7 @@ class Accurate:
         """
         Load the sentences from json files
         """
+
         def readJson(refName, candName):
 
             path_to_ref_file = os.path.join(refName)
@@ -304,7 +308,7 @@ class Accurate:
 
             return gts, res
 
-        print 'Loading Data...'
+        print('Loading Data...')
         gts, res = readJson(self._refName, self._candName)
         # =================================================
         # Set up scorers
@@ -337,13 +341,12 @@ class Accurate:
                 # Compute scores
                 # =================================================
                 for scorer, method in scorers:
-                    print 'computing %s score...'%(scorer.method())
+                    print('computing %s score...') % (scorer.method())
                     score, scores = scorer.compute_score(new_gts, new_res)
                 accuracy[image_id].append(score)
             avg_cider += np.mean(accuracy[image_id])
         self.eval = accuracy
-        print ('Average Cider: %.5f')%(avg_cider / len(accuracy))
+        print('Average Cider: %.5f') % (avg_cider / len(accuracy))
 
     def setEval(self, score, method):
         self.eval[method] = score
-
