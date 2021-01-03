@@ -143,7 +143,7 @@ class LSA:
             res = defaultdict(list)
 
             for id_cap in cand_list:
-                res[id_cap['image_id']].extend(id_cap['captions'])
+                res[id_cap['image_id']].extend(id_cap['caption'])
 
             return res
 
