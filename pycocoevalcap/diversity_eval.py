@@ -30,8 +30,8 @@ class SelfCider:
         self._dfMode = dfMode
         self._num = num
         if self._dfMode != 'corpus':
-            with open('./data/coco-train2014-df.p', 'r') as f:
-                self._df_file = pickle.load(f)
+            with open('./data/coco-train2014-df.p', 'rb') as f:
+                self._df_file = pickle.load(f, encoding='bytes')
 
     def evaluate(self):
         """
@@ -45,7 +45,7 @@ class SelfCider:
             res = defaultdict(list)
 
             for id_cap in cand_list:
-                res[id_cap['image_id']].extend(id_cap['captions'])
+                res[id_cap['image_id']].extend(id_cap['caption'])
 
             return res
 
@@ -102,7 +102,7 @@ class SelfCider:
                     # Compute scores
                     # =================================================
                     for scorer, method in scorers:
-                        print('computing %s score...') % (scorer.method())
+                        print('computing %s score...' % (scorer.method()))
                         score, scores = scorer.compute_score(new_gts, new_res)
 
                     cov[i, j] = score
