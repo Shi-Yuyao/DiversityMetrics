@@ -64,7 +64,7 @@ class SelfCider:
         ratio = {}
         avg_diversity = 0
         for im_id in res.keys():
-            print('number of images: %d\n') % (len(ratio))
+            print('number of images: %d\n' % (len(ratio)))
             cov = np.zeros([self._num, self._num])
             for i in range(self._num):
                 for j in range(i, self._num):
@@ -116,7 +116,7 @@ class SelfCider:
             avg_diversity += -np.log10(r) / np.log10(self._num)
             if len(ratio) == 5000:
                 break
-        print('Average diversity: %.5f') % (avg_diversity / len(ratio))
+        print('Average diversity: %.5f' % (avg_diversity / len(ratio)))
         self.eval = ratio
 
     def setEval(self, score, method):
@@ -172,17 +172,17 @@ class LSA:
         ratio = {}
         avg_diversity = 0
         for im_id in res.keys():
-            print('number of images: %d\n') % (len(ratio))
+            print('number of images: %d\n' % (len(ratio)))
             captions = res[im_id][:self._num]
             term_doc = term_document(captions)
             u, s, v = np.linalg.svd(term_doc)
             r = max(s) / s.sum()
-            print('ratio=%.5f\n') % (r)
+            print('ratio=%.5f\n' % (r))
             ratio[im_id] = -np.log10(r) / np.log10(self._num)
             avg_diversity += -np.log10(r) / np.log10(self._num)
             if len(ratio) == 5000:
                 break
-        print('Average diversity: %.5f') % (avg_diversity / len(ratio))
+        print('Average diversity: %.5f' % (avg_diversity / len(ratio)))
         self.eval = ratio
 
 
@@ -225,7 +225,7 @@ class mBLEU:
         ratio = {}
         avg_diversity = 0
         for im_id in res.keys():
-            print('number of images: %d\n') % (len(ratio))
+            print('number of images: %d\n' % (len(ratio)))
             final_score = []
             for i in range(self._num):
                 new_gts = {}
@@ -248,7 +248,7 @@ class mBLEU:
                 # Compute scores
                 # =================================================
                 for scorer, method in scorers:
-                    print('computing %s score...') % (scorer.method())
+                    print('computing %s score...' % (scorer.method()))
                     score, scores = scorer.compute_score(gts=new_gts, res=new_res)
                 final_score.append(score)
             mbleus = np.array(final_score).sum(0) / self._num
@@ -256,7 +256,7 @@ class mBLEU:
             avg_diversity += sum(mbleus) / 4
             if len(ratio) == 5000:
                 break
-        print('Average diversity: %.5f') % (avg_diversity / len(ratio))
+        print('Average diversity: %.5f' % (avg_diversity / len(ratio)))
         self.eval = ratio
 
     def setEval(self, score, method):
@@ -341,12 +341,12 @@ class Accurate:
                 # Compute scores
                 # =================================================
                 for scorer, method in scorers:
-                    print('computing %s score...') % (scorer.method())
+                    print('computing %s score...' % (scorer.method()))
                     score, scores = scorer.compute_score(new_gts, new_res)
                 accuracy[image_id].append(score)
             avg_cider += np.mean(accuracy[image_id])
         self.eval = accuracy
-        print('Average Cider: %.5f') % (avg_cider / len(accuracy))
+        print('Average Cider: %.5f' % (avg_cider / len(accuracy)))
 
     def setEval(self, score, method):
         self.eval[method] = score
