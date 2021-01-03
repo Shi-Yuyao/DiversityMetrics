@@ -27,6 +27,7 @@ same. The code will throw an error otherwise.
 # demo script for running coco evaluation scripts
 import json
 import os
+
 # from pycocoevalcap.eval import COCOEvalCap as COCOEval
 # from pycocoevalcap.PSA_STS import COCOEvalCap as COCOEval
 # from pycocoevalcap.diversity_eval import LSA as COCOEval
@@ -50,14 +51,14 @@ dfMode = config['idf']
 num = int(config['num'])
 
 # Print the parameters
-print "Running metrics with the following settings"
-print "*****************************"
-print "Reference File:%s" % (refName)
-print "Candidate File:%s" % (candName)
-print "Result File:%s" % (resultFile)
-print "IDF:%s" % (dfMode)
-print "num:%d" % (num)
-print "*****************************"
+print("Running metrics with the following settings")
+print("*****************************")
+print("Reference File:%s" % (refName))
+print("Candidate File:%s" % (candName))
+print("Result File:%s" % (resultFile))
+print("IDF:%s" % (dfMode))
+print("num:%d" % (num))
+print("*****************************")
 num = 5
 # resultFile = resultFile.split('.')[0]+str(num) + '.json'
 
