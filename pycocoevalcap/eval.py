@@ -5,14 +5,15 @@ import json
 import pickle
 
 from collections import defaultdict
-from tokenizer.ptbtokenizer import PTBTokenizer
-from bleu.bleu import Bleu
-from meteor.meteor import Meteor
-from rouge.rouge import Rouge
-from cider.cider import Cider
+from .tokenizer.ptbtokenizer import PTBTokenizer
+from .bleu.bleu import Bleu
+from .meteor.meteor import Meteor
+from .rouge.rouge import Rouge
+from .cider.cider import Cider
+
 
 class COCOEvalCap:
-    def __init__(self, pathToData, refName, candName, dfMode = "corpus"):
+    def __init__(self, pathToData, refName, candName, dfMode="corpus"):
         """
         Reference file: list of dict('image_id': image_id, 'caption': caption).
         Candidate file: list of dict('image_id': image_id, 'caption': caption).
@@ -32,6 +33,7 @@ class COCOEvalCap:
         """
         Load the sentences from json files
         """
+
         def readJson(refName, candName):
 
             path_to_ref_file = os.path.join(self._pathToData, refName)
@@ -60,23 +62,23 @@ class COCOEvalCap:
 
             return new_gts, new_res
 
-        print 'Loading Data...'
+        print('Loading Data...')
         gts, res = readJson(self._refName, self._candName)
         # =================================================
         # Set up scorers
         # =================================================
-        print 'tokenization...'
+        print('tokenization...')
         tokenizer = PTBTokenizer()
-        gts  = tokenizer.tokenize(gts)
+        gts = tokenizer.tokenize(gts)
         res = tokenizer.tokenize(res)
 
         # =================================================
         # Set up scorers
         # =================================================
-        print 'setting up scorers...'
+        print('setting up scorers...')
         scorers = [
             (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
-            (Meteor(),"METEOR"),
+            (Meteor(), "METEOR"),
             (Rouge(), "ROUGE_L"),
             (Cider(self._dfMode, self._df_file), "CIDEr")
         ]
@@ -85,7 +87,7 @@ class COCOEvalCap:
         # Compute scores
         # =================================================
         for scorer, method in scorers:
-            print 'computing %s score...'%(scorer.method())
+            print('computing %s score...' % (scorer.method()))
             score, scores = scorer.compute_score(gts, res)
             if type(method) == list:
                 for sc, scs, m in zip(score, scores, method):
@@ -95,4 +97,3 @@ class COCOEvalCap:
 
     def setEval(self, score, method):
         self.eval[method] = score
-
