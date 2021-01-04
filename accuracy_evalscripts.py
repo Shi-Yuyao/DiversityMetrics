@@ -43,14 +43,14 @@ dfMode = config['idf']
 num = int(config['num'])
 
 # Print the parameters
-print "Running metrics with the following settings"
-print "*****************************"
-print "Reference File:%s" % (refName)
-print "Candidate File:%s" % (candName)
-print "Result File:%s" % (resultFile)
-print "IDF:%s" % (dfMode)
-print "num:%d" % (num)
-print "*****************************"
+print("Running metrics with the following settings")
+print("*****************************")
+print("Reference File:%s" % (refName))
+print("Candidate File:%s" % (candName))
+print("Result File:%s" % (resultFile))
+print("IDF:%s" % (dfMode))
+print("num:%d" % (num))
+print("*****************************")
 
 # calculate metric scores
 # scorer = COCOEval(pathToData, refName, candName, dfMode)
